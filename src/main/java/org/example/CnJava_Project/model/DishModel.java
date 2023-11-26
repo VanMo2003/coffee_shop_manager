@@ -1,9 +1,6 @@
 package org.example.CnJava_Project.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,10 +8,13 @@ import lombok.Data;
 @Table(name = "dish")
 public class DishModel {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
-	String id;
+	private String id;
 	@Column(name = "name_dish")
-	String nameDish;
+	private String nameDish;
 	@Column(name = "unit_price")
-	Double unitPrice;
+	private Double unitPrice;
+	@Column(name = "dish_group")
+	private int dishGroup;
 }

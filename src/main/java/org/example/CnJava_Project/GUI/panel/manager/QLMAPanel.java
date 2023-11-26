@@ -4,6 +4,7 @@ import org.example.CnJava_Project.GUI.ManagerView;
 import org.example.CnJava_Project.controller.QLMAController;
 import org.example.CnJava_Project.model.DishModel;
 import org.example.CnJava_Project.respository.DishRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

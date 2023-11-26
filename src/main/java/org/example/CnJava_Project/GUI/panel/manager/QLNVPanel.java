@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 public class QLNVPanel extends JPanel {
 	private ManagerView managerView;
 	private  JPanel contentPane = new JPanel();
@@ -35,12 +34,11 @@ public class QLNVPanel extends JPanel {
 	public  JRadioButton JRadioNu;
 	public  ButtonGroup buttonGroup_gioiTinh;
 	public EmployeeRepository employeeRepository;
-	public AccountRepository accountRepository;
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	public QLNVPanel(ManagerView managerView, EmployeeRepository employeeRepository, AccountRepository accountRepository){
-		this.employeeRepository = employeeRepository;
+	public QLNVPanel(ManagerView managerView, EmployeeRepository employeeRepository){
 		this.managerView = managerView;
-		this.accountRepository = accountRepository;
+
+		this.employeeRepository = employeeRepository;
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		contentPane.setVisible(false);
@@ -349,6 +347,7 @@ public class QLNVPanel extends JPanel {
 		Optional<EmployeeModel> employeeModelFound = employeeRepository.findById(employeeModel.getCccd());
 
 		if (!employeeModelFound.isPresent()) {
+			System.out.println(employeeModel.getBirthPlace());
 			employeeRepository.save(employeeModel);
 			addDataTable(employeeModel);
 			reset();

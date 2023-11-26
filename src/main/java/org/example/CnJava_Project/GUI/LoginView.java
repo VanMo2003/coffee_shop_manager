@@ -18,19 +18,12 @@ import java.awt.event.ActionListener;
 public class LoginView extends JFrame  {
 	@Autowired
 	public AccountRepository accountRepository;
-	@Autowired
-	public EmployeeRepository employeeRepository;
-	@Autowired
-	public DishRepository dishRepository;
-	@Autowired
-	public InfoShopRepository infoShopRepository;
 	public JTextField textFieldUsername;
 	public JPasswordField passwordField;
 	public JLabel lbError;
-//	@Autowired
-//	public ConfigurableApplicationContext context;
+	@Autowired
+	public ConfigurableApplicationContext context;
 	public LoginView(){
-//		this.context = context;
 		setSize(400, 300);
 		setLocationRelativeTo(null);
 		this.setTitle("Đăng nhập");

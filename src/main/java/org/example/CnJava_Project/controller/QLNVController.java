@@ -25,9 +25,6 @@ public class QLNVController implements ActionListener {
 			view.deleteEmployeeSelected();
 		}else if (eventString.equals("Chỉnh sửa")) {
 			view.updateEmployeeSelected();
-		}else if (eventString.equals("Tài khoản")) {
-			AccountEmployeeView accountEmployeeView = new AccountEmployeeView(view.employeeRepository, view.accountRepository);
-			accountEmployeeView.setVisible(true);
 		}else if (eventString.equals("Hủy")) {
 			view.reset();
 		}
@@ -35,11 +32,12 @@ public class QLNVController implements ActionListener {
 
 	private void addNV() {
 		String cccd = view.textField_CCCD.getText();
-		System.out.println("cccd" + cccd);
 		String fullName = view.textField_FullName.getText();
 		String dateOfBirthString = view.textField_DateOfBirth.getText();
 		int intBirthPlace = view.comboBox_BirthPlace.getSelectedIndex();
+		System.out.println(intBirthPlace);
 		String birthPlace = TinhModel.getTinhById(intBirthPlace);
+		System.out.println(birthPlace);
 		String numberPhone = view.textField_NumberPhone.getText();
 		String role = view.textField_Role.getText();
 		boolean gioiTinh = true;

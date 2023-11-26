@@ -22,7 +22,7 @@ public class QLMAController implements ActionListener {
 			view.updateDishSelected();
 		}else if (eventString.equals("Tài khoản")) {
 			System.out.println(eventString);
-		}else if (eventString.equals("Hủy")) {
+		}else if (eventString.equals("Reset")) {
 			view.reset();
 		}
 	}

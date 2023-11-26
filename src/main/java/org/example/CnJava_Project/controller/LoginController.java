@@ -31,18 +31,16 @@ public class LoginController implements ActionListener {
 			String passwordDecrypt = AES256.decrypt(accountFound.get().getPassword(), secretKey, salt);
 			if (password.equals(passwordDecrypt)){
 				if (accountFound.get().isRole()){
-					ManagerView managerView = new ManagerView(
-							view.employeeRepository,
-							view.dishRepository,
-							view.accountRepository,
-							view.infoShopRepository,
-							view
-					);
-//					ManagerView managerView = view.context.getBean(ManagerView.class);
+					ManagerView managerView = view.context.getBean(ManagerView.class);
 					managerView.setVisible(true);
+					if (managerView.qlmaPanel != null || managerView.qlnvPanel != null) {
+						managerView.qlnvPanel.closePanel();
+						managerView.qlmaPanel.closePanel();
+					}
 					System.out.println("Login Successfully Quản lý");
-				}else {
-					EmployeeView employeeView = new EmployeeView(view.infoShopRepository);
+				}
+				else {
+					EmployeeView employeeView = new EmployeeView(view.context.getBean(ManagerView.class).infoShopRepository);
 					employeeView.setVisible(true);
 					System.out.println("Login Successfully Nhân viên");
 				}

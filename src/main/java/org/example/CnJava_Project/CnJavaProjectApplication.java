@@ -21,7 +21,5 @@ public class CnJavaProjectApplication {
 		ConfigurableApplicationContext context = new SpringApplicationBuilder(CnJavaProjectApplication.class).headless(false).run(args);
 //		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		LoginView loginView = context.getBean(LoginView.class);
-
-
 	}
 }

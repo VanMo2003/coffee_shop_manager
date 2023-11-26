@@ -6,9 +6,11 @@ import org.example.CnJava_Project.GUI.panel.employee.TablePanel;
 import org.example.CnJava_Project.constants.SizeEmployeeConstants;
 import org.example.CnJava_Project.model.InfoShopModel;
 import org.example.CnJava_Project.respository.InfoShopRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-
+@Component
 public class EmployeeView extends JFrame {
 	public InfoShopRepository infoShopRepository;
 	public InfoShopModel infoShopModel = new InfoShopModel();
@@ -16,11 +18,9 @@ public class EmployeeView extends JFrame {
 	private int width = SizeEmployeeConstants.width;
 	private OrderPanel orderPanel;
 	private MenuPanel menuPanel;
-
 	public EmployeeView(InfoShopRepository infoShopRepository){
 		this.infoShopRepository = infoShopRepository;
 		getInfoShop();
-		pack();
 		setTitle(infoShopModel.getNameShop());
 		setSize(width, height);
 		setLocationRelativeTo(null);

@@ -8,32 +8,27 @@ import org.example.CnJava_Project.respository.DishRepository;
 import org.example.CnJava_Project.respository.EmployeeRepository;
 import org.example.CnJava_Project.respository.InfoShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
-
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+@Component
 public class ManagerView extends JFrame {
-	public JFrame loginView;
 	public QLNVPanel qlnvPanel;
 	public QLMAPanel qlmaPanel;
+	@Autowired
 	public EmployeeRepository employeeRepository;
+	@Autowired
 	public DishRepository dishRepository;
-	public ActionListener ac;
-	public AccountRepository accountRepository;
+	@Autowired
 	public InfoShopRepository infoShopRepository;
-	public ManagerView(
-			EmployeeRepository employeeRepository,
-			DishRepository dishRepository,
-			AccountRepository accountRepository,
-			InfoShopRepository infoShopRepository,
-			LoginView loginView
-	){
-		this.employeeRepository = employeeRepository;
-		this.dishRepository = dishRepository;
-		this.accountRepository = accountRepository;
-		this.infoShopRepository = infoShopRepository;
-		this.loginView = loginView;
+	@Autowired
+	public AccountRepository accountRepository;
+	public ActionListener ac;
+	@Autowired
+	public ConfigurableApplicationContext context;
+	public ManagerView(){
 		setTitle("Quản lý");
 		setBounds(100, 100, 980, 740);
 		setLocationRelativeTo(null);
@@ -42,23 +37,35 @@ public class ManagerView extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		this.setJMenuBar(menuBar);
 
-		JMenu mnQuanLy = new JMenu("Quản lý");
+		JMenu mnQuanLy = new JMenu("Chức năng");
 		menuBar.add(mnQuanLy);
 
-		JMenuItem mnQLNhanVien = new JMenuItem("Quản Lý Nhân Viên");
-		mnQLNhanVien.addActionListener(ac);
+		JMenu mnQLNhanVien = new JMenu("Quản Lý Nhân Viên");
 		mnQuanLy.add(mnQLNhanVien);
 
-		JMenuItem mnQLMonAn = new JMenuItem("Quản Lý Món Ăn");
-		mnQLMonAn.addActionListener(ac);
+		JMenuItem mnThongTin = new JMenuItem("Thông tin");
+		mnThongTin.addActionListener(ac);
+		mnQLNhanVien.add(mnThongTin);
+		JMenuItem mnTaiKhoan = new JMenuItem("Tài khoản");
+		mnTaiKhoan.addActionListener(ac);
+		mnQLNhanVien.add(mnTaiKhoan);
+
+		JMenu mnQLMonAn = new JMenu("Quản lý món ăn");
 		mnQuanLy.add(mnQLMonAn);
+
+		JMenuItem mnNhomMon = new JMenuItem("Nhóm món");
+		mnNhomMon.addActionListener(ac);
+		mnQLMonAn.add(mnNhomMon);
+		JMenuItem mnThucDon = new JMenuItem("Thực đơn");
+		mnThucDon.addActionListener(ac);
+		mnQLMonAn.add(mnThucDon);
 
 		JSeparator separator = new JSeparator();
 		mnQuanLy.add(separator);
 
-		JMenuItem mnThongTin = new JMenuItem("Thông tin quán");
-		mnThongTin.addActionListener(ac);
-		mnQuanLy.add(mnThongTin);
+		JMenuItem mnThongTinQuan = new JMenuItem("Thông tin quán");
+		mnThongTinQuan.addActionListener(ac);
+		mnQuanLy.add(mnThongTinQuan);
 
 		JMenuItem mnQLDoanhThu = new JMenuItem("Doanh Thu");
 		mnQLDoanhThu.addActionListener(ac);
@@ -76,7 +83,7 @@ public class ManagerView extends JFrame {
 	}
 
 	public void showQLNV() {
-		qlnvPanel = new QLNVPanel(this,employeeRepository, accountRepository);
+		qlnvPanel = new QLNVPanel(this,employeeRepository);
 
 		qlnvPanel.showPanel();
 		if (qlmaPanel!=null)

@@ -76,7 +76,7 @@ public class TinhModel implements Serializable {
 	}
 
 	public static String getTinhById(int queQuan) {
-		if (queQuan == -1) {
+		if (queQuan != -1) {
 			return TinhModel.getDSTinh().get(queQuan - 1).toString().split("-")[1].trim();
 		}
 		return null;

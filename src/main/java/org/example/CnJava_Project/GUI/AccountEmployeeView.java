@@ -5,6 +5,8 @@ import org.example.CnJava_Project.controller.AccountController;
 import org.example.CnJava_Project.model.EmployeeModel;
 import org.example.CnJava_Project.respository.AccountRepository;
 import org.example.CnJava_Project.respository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.swing.*;
@@ -15,7 +17,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+@Component
 public class AccountEmployeeView extends JFrame {
 	public JLabel lblShowFullName;
 	public JPasswordField textField_Password;
@@ -23,6 +25,7 @@ public class AccountEmployeeView extends JFrame {
 	public  JComboBox comboBox_CCCD;
 	public EmployeeRepository employeeRepository;
 	public EmployeeModel employeeModel = new EmployeeModel();
+	@Autowired
 	public AccountRepository accountRepository;
 	public AccountEmployeeView(EmployeeRepository employeeRepository, AccountRepository accountRepository){
 		this.employeeRepository = employeeRepository;

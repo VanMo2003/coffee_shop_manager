@@ -3,6 +3,8 @@ package org.example.CnJava_Project.GUI;
 import org.example.CnJava_Project.controller.InfoShopController;
 import org.example.CnJava_Project.model.InfoShopModel;
 import org.example.CnJava_Project.respository.InfoShopRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,5 +1,6 @@
 package org.example.CnJava_Project.controller;
 
+import org.example.CnJava_Project.GUI.AccountEmployeeView;
 import org.example.CnJava_Project.GUI.InfoShopView;
 import org.example.CnJava_Project.GUI.LoginView;
 import org.example.CnJava_Project.GUI.ManagerView;
@@ -15,9 +16,15 @@ public class ManagerController implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String eventString = e.getActionCommand();
 
-		if (eventString.equals("Quản Lý Nhân Viên")){
+		if (eventString.equals("Thông tin")){
 			view.showQLNV();
-		}else if (eventString.equals("Quản Lý Món Ăn")){
+		} else if (eventString.equals("Tài khoản")) {
+			AccountEmployeeView accountEmployeeView = new AccountEmployeeView(view.employeeRepository, view.accountRepository);
+			accountEmployeeView.setVisible(true);
+		}else if (eventString.equals("Nhóm món")) {
+			System.out.println(eventString);
+		}
+		else if (eventString.equals("Thực đơn")){
 			view.showQLMA();
 		}else if (eventString.equals("Doanh Thu")){
 			System.out.println(eventString);
@@ -25,9 +32,11 @@ public class ManagerController implements ActionListener {
 			InfoShopView infoShopView = new InfoShopView(view.infoShopRepository);
 			infoShopView.setVisible(true);
 		}else if (eventString.equals("Đăng xuất")){
-//			view.setVisible(false);
-//			LoginView loginView = new LoginView();
-//			loginView.setVisible(true);
+			view.setVisible(false);
+			LoginView loginView = view.context.getBean(LoginView.class);
+			loginView.textFieldUsername.setText("");
+			loginView.passwordField.setText("");
+			loginView.setVisible(true);
 		}
 
 	}
