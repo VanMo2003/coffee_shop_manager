@@ -1,8 +1,6 @@
 package org.example.CnJava_Project;
 
 import org.example.CnJava_Project.GUI.LoginView;
-import org.example.CnJava_Project.GUI.ManagerView;
-import org.example.CnJava_Project.model.EmployeeModel;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

@@ -20,7 +20,7 @@ public class QLNVController implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String eventString = e.getActionCommand();
 		if (eventString.equals("Thêm")) {
-			addNV();
+			view.insertData();
 		}else if (eventString.equals("Xóa")) {
 			view.deleteEmployeeSelected();
 		}else if (eventString.equals("Chỉnh sửa")) {
@@ -28,42 +28,5 @@ public class QLNVController implements ActionListener {
 		}else if (eventString.equals("Hủy")) {
 			view.reset();
 		}
-	}
-
-	private void addNV() {
-		String cccd = view.textField_CCCD.getText();
-		String fullName = view.textField_FullName.getText();
-		String dateOfBirthString = view.textField_DateOfBirth.getText();
-		int intBirthPlace = view.comboBox_BirthPlace.getSelectedIndex();
-		System.out.println(intBirthPlace);
-		String birthPlace = TinhModel.getTinhById(intBirthPlace);
-		System.out.println(birthPlace);
-		String numberPhone = view.textField_NumberPhone.getText();
-		String role = view.textField_Role.getText();
-		boolean gioiTinh = true;
-		if (view.JRadioNam.isSelected()) {
-			gioiTinh = true;
-		} else if (view.JRadioNu.isSelected()) {
-			gioiTinh = false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateOfBirth;
-		try {
-			dateOfBirth = sdf.parse(dateOfBirthString);
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
-		}
-
-		EmployeeModel employeeModel = new EmployeeModel();
-		employeeModel.setCccd(cccd);
-		employeeModel.setFullName(fullName);
-		employeeModel.setDateOfBirth(dateOfBirth);
-		employeeModel.setBirthPlace(birthPlace);
-		employeeModel.setNumberPhone(numberPhone);
-		employeeModel.setRole(role.equals("Nhân viên") ? false : true);
-		employeeModel.setSex(gioiTinh);
-
-		view.insertData(employeeModel);
 	}
 }

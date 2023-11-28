@@ -87,7 +87,7 @@ public class QLNVPanel extends JPanel {
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setDataSelectedToTF();
+				getDataSelected();
 			}
 		});
 		table.setRowHeight(25);
@@ -150,19 +150,18 @@ public class QLNVPanel extends JPanel {
 		textField_FullName.setBounds(117, 474, 274, 25);
 		contentPane.add(textField_FullName);
 
+		textField_DateOfBirth = new JTextField();
+		textField_DateOfBirth.setColumns(10);
+		textField_DateOfBirth.setBounds(117, 509, 274, 25);
+		contentPane.add(textField_DateOfBirth);
+
 		comboBox_BirthPlace = new JComboBox();
 		ArrayList<TinhModel> listCity = TinhModel.getDSTinh();
-		comboBox_BirthPlace.addItem("");
 		for (TinhModel tinh : listCity) {
 			comboBox_BirthPlace.addItem(tinh.getTenTinh());
 		}
 		comboBox_BirthPlace.setBounds(117, 544, 274, 25);
 		contentPane.add(comboBox_BirthPlace);
-
-		textField_DateOfBirth = new JTextField();
-		textField_DateOfBirth.setColumns(10);
-		textField_DateOfBirth.setBounds(117, 509, 274, 25);
-		contentPane.add(textField_DateOfBirth);
 
 		textField_NumberPhone = new JTextField();
 		textField_NumberPhone.setColumns(10);
@@ -230,32 +229,20 @@ public class QLNVPanel extends JPanel {
 		this.managerView.setContentPane(contentPane);
 	}
 	public void updateEmployeeSelected(){
-		EmployeeModel employeeModel = getDataSelected();
-		if (employeeModel!=null) {
-			Optional<EmployeeModel> employeeModelFound = employeeRepository.findById(employeeModel.getCccd());
+		EmployeeModel employeeModelUpdate = textFieldToObject();
+		if (employeeModelUpdate!=null) {
+			DefaultTableModel dftm = (DefaultTableModel) table.getModel();
+			int i_row = table.getSelectedRow();
+			String cccdOld = dftm.getValueAt(i_row, 0).toString();
+			Optional<EmployeeModel> employeeModelFound = employeeRepository.findById(cccdOld);
 
 			if (employeeModelFound.isPresent()){
-				EmployeeModel employeeModelUpdate = employeeModelFound.get();
-				employeeModelUpdate.setCccd(textField_CCCD.getText());
-				employeeModelUpdate.setFullName(textField_FullName.getText());
-				try {
-					employeeModelUpdate.setDateOfBirth(sdf.parse(textField_DateOfBirth.getText()));
-				} catch (ParseException e) {
-					throw new RuntimeException(e);
-				}
-				int intBirthPlace = comboBox_BirthPlace.getSelectedIndex();
-				String birthPlace = TinhModel.getTinhById(intBirthPlace);
-				employeeModelUpdate.setBirthPlace(birthPlace);
-				employeeModelUpdate.setNumberPhone(textField_NumberPhone.getText());
-				employeeModelUpdate.setRole(!textField_Role.getText().equals("Nhân viên"));
-				employeeModelUpdate.setSex(JRadioNam.isSelected());
+				updateRowTable(employeeModelUpdate, dftm);
 
-				updateRowTable(employeeModelUpdate);
-
-				if (employeeModel.getCccd().equals(employeeModelUpdate.getCccd())){
+				if (cccdOld.equals(employeeModelUpdate.getCccd())){
 					employeeRepository.save(employeeModelUpdate);
 				}else {
-					employeeRepository.delete(employeeModel);
+					employeeRepository.deleteById(cccdOld);
 					employeeRepository.save(employeeModelUpdate);
 				}
 
@@ -263,9 +250,7 @@ public class QLNVPanel extends JPanel {
 			}
 		}
 	}
-	private void updateRowTable(EmployeeModel employeeModelUpdate){
-		DefaultTableModel dftm = (DefaultTableModel) table.getModel();
-		if (table.getSelectedRowCount() == 1){
+	private void updateRowTable(EmployeeModel employeeModelUpdate, DefaultTableModel dftm){
 			int i_row = table.getSelectedRow();
 			dftm.setValueAt(employeeModelUpdate.getCccd(), i_row, 0);
 			dftm.setValueAt(employeeModelUpdate.getFullName(), i_row, 1);
@@ -276,14 +261,9 @@ public class QLNVPanel extends JPanel {
 			dftm.setValueAt(!employeeModelUpdate.isRole() ? "Nhân viên" : "Quản lý", i_row, 6);
 
 			JOptionPane.showMessageDialog(managerView, "Update Successfully");
-		}else {
-			if (table.getRowCount() == 0){
-				JOptionPane.showMessageDialog(managerView, "Danh sách rỗng");
-			}
-		}
 	}
 	public void deleteEmployeeSelected()  {
-		EmployeeModel employeeModel = getDataSelected();
+		EmployeeModel employeeModel = textFieldToObject();
 
 		if (employeeModel != null) {
 			int luaChon = JOptionPane.showConfirmDialog(
@@ -300,60 +280,70 @@ public class QLNVPanel extends JPanel {
 				dftm.removeRow(i_row);
 				reset();
 			}
-		} else {
-			JOptionPane.showMessageDialog(managerView, "Bạn chưa chọn nhân viên", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	private void setDataSelectedToTF()  {
-		EmployeeModel employeeModel = getDataSelected();
-		if (employeeModel!=null){
-			textField_CCCD.setText(employeeModel.getCccd());
-			textField_FullName.setText(employeeModel.getFullName());
-			textField_DateOfBirth.setText(sdf.format(employeeModel.getDateOfBirth()));
-			TinhModel tinhModel = TinhModel.getTinhByTen(employeeModel.getBirthPlace());
-			comboBox_BirthPlace.setSelectedItem(tinhModel.getTenTinh());
-			textField_NumberPhone.setText(employeeModel.getNumberPhone());
-			textField_Role.setText(!employeeModel.isRole()? "Nhân viên":"Quản lý");
-			if (employeeModel.isSex()){
+	private void getDataSelected()  {
+		DefaultTableModel dftm = (DefaultTableModel) table.getModel();
+		int index_row = table.getSelectedRow();
+		if (index_row>=0) {
+			textField_CCCD.setText(dftm.getValueAt(index_row, 0).toString());
+			textField_FullName.setText(dftm.getValueAt(index_row, 1).toString());
+			textField_DateOfBirth.setText(dftm.getValueAt(index_row, 2).toString());
+			comboBox_BirthPlace.setSelectedItem(dftm.getValueAt(index_row, 3).toString());
+			textField_NumberPhone.setText(dftm.getValueAt(index_row, 4).toString());
+			if (dftm.getValueAt(index_row, 5).toString().equals("Nam")){
 				JRadioNam.setSelected(true);
 			}else {
 				JRadioNu.setSelected(true);
 			}
+			textField_Role.setText(dftm.getValueAt(index_row, 6).toString());
 		}
 	}
-	private EmployeeModel getDataSelected()  {
-		DefaultTableModel dftm = (DefaultTableModel) table.getModel();
-		int index_row = table.getSelectedRow();
-		if (index_row>=0) {
-			EmployeeModel employeeModel = new EmployeeModel();
-			employeeModel.setCccd(dftm.getValueAt(index_row, 0).toString());
-			employeeModel.setFullName(dftm.getValueAt(index_row, 1).toString());
-			try {
-				employeeModel.setDateOfBirth(sdf.parse(dftm.getValueAt(index_row, 2).toString()));
-			} catch (ParseException e) {
-				throw new RuntimeException(e);
+
+	public void insertData(){
+		EmployeeModel employeeModel = textFieldToObject();
+		if (employeeModel!=null) {
+			Optional<EmployeeModel> employeeModelFound = employeeRepository.findById(employeeModel.getCccd());
+
+			if (!employeeModelFound.isPresent()) {
+				employeeRepository.save(employeeModel);
+				addDataTable(employeeModel);
+				reset();
+			} else {
+				JOptionPane.showMessageDialog(managerView, "Trùng số căn cước công dân", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			employeeModel.setBirthPlace(dftm.getValueAt(index_row, 3).toString());
-			employeeModel.setNumberPhone(dftm.getValueAt(index_row, 4).toString());
-			employeeModel.setSex(dftm.getValueAt(index_row, 5).toString().equals("Nam"));
-			employeeModel.setRole(!dftm.getValueAt(index_row, 6).toString().equals("Nhân viên"));
+		}
+	}
+	private EmployeeModel textFieldToObject(){
+		String cccd = textField_CCCD.getText();
+		String fullName = textField_FullName.getText();
+		String dateOfBirth = textField_DateOfBirth.getText();
+		String birthPlace = comboBox_BirthPlace.getSelectedItem().toString();
+		String numberPhone = textField_NumberPhone.getText();
+		String role = textField_Role.getText();
+
+		if (!cccd.equals("") && !fullName.equals("") && !birthPlace.equals("") && !numberPhone.equals("")
+			&& !role.equals("") && (JRadioNam.isSelected() || JRadioNu.isSelected())
+		){
+			EmployeeModel employeeModel = new EmployeeModel();
+			employeeModel.setCccd(cccd);
+			employeeModel.setFullName(fullName);
+			try {
+				employeeModel.setDateOfBirth(sdf.parse(dateOfBirth));
+			} catch (ParseException e) {
+				JOptionPane.showMessageDialog(managerView, "Nhập ngày sinh theo form dd/MM/yyyy", "Error", JOptionPane.ERROR_MESSAGE);
+				return null;
+			}
+			employeeModel.setBirthPlace(birthPlace);
+			employeeModel.setNumberPhone(numberPhone);
+			employeeModel.setRole(role.equals("Nhân viên") ? false : true);
+			employeeModel.setSex(JRadioNam.isSelected());
 			return employeeModel;
 		}else {
+			JOptionPane.showMessageDialog(managerView, "Mời bạn nhập đầy đủ thông tin", "Error", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-	}
 
-	public void insertData(EmployeeModel employeeModel){
-		Optional<EmployeeModel> employeeModelFound = employeeRepository.findById(employeeModel.getCccd());
-
-		if (!employeeModelFound.isPresent()) {
-			System.out.println(employeeModel.getBirthPlace());
-			employeeRepository.save(employeeModel);
-			addDataTable(employeeModel);
-			reset();
-		}else {
-			JOptionPane.showMessageDialog(managerView, "Trùng số căn cước công dân", "Error", JOptionPane.ERROR_MESSAGE);
-		}
 	}
 	public void getDataTable(){
 		List<EmployeeModel> employeeModelFound = employeeRepository.findAll();
@@ -365,7 +355,7 @@ public class QLNVPanel extends JPanel {
 			}
 		}
 	}
-	public  void addDataTable(EmployeeModel employeeModel) {
+	public void addDataTable(EmployeeModel employeeModel) {
 		DefaultTableModel dftm = (DefaultTableModel) table.getModel();
 
 		dftm.addRow(new Object[]{
@@ -382,7 +372,7 @@ public class QLNVPanel extends JPanel {
 		textField_CCCD.setText("");
 		textField_FullName.setText("");
 		textField_DateOfBirth.setText("");
-		comboBox_BirthPlace.setSelectedIndex(-1);
+		comboBox_BirthPlace.setSelectedIndex(0);
 		textField_NumberPhone.setText("");
 		textField_Role.setText("");
 		buttonGroup_gioiTinh.clearSelection();

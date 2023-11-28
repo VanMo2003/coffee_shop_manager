@@ -3,6 +3,7 @@ package org.example.CnJava_Project.GUI;
 import org.example.CnJava_Project.controller.InfoShopController;
 import org.example.CnJava_Project.model.InfoShopModel;
 import org.example.CnJava_Project.respository.InfoShopRepository;
+import org.example.CnJava_Project.respository.TableDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +16,10 @@ public class InfoShopView extends JFrame {
 	public JTextField textField_NameShop;
 	public JTextField textField_TotalTable;
 	public InfoShopRepository infoShopRepository;
-	public InfoShopView(InfoShopRepository infoShopRepository){
+	public TableDataRepository tableDataRepository;
+	public InfoShopView(InfoShopRepository infoShopRepository, TableDataRepository tableDataRepository){
 		this.infoShopRepository = infoShopRepository;
+		this.tableDataRepository = tableDataRepository;
 		this.setTitle("Thông tin");
 		this.setSize(300, 300);
 		this.setLocationRelativeTo(null);

@@ -8,9 +8,6 @@ import lombok.Data;
 @Table(name = "dish")
 public class DishModel {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id")
-	private String id;
 	@Column(name = "name_dish")
 	private String nameDish;
 	@Column(name = "unit_price")

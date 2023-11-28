@@ -2,9 +2,11 @@ package org.example.CnJava_Project.GUI.panel.manager;
 
 import org.example.CnJava_Project.GUI.ManagerView;
 import org.example.CnJava_Project.controller.QLMAController;
+import org.example.CnJava_Project.model.DishGroupModel;
 import org.example.CnJava_Project.model.DishModel;
+import org.example.CnJava_Project.model.TinhModel;
+import org.example.CnJava_Project.respository.DishGroupRepository;
 import org.example.CnJava_Project.respository.DishRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,21 +15,24 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class QLMAPanel extends JPanel {
+	public JComboBox comboBox_DishGroup;
 	private ManagerView managerView;
 	private  JPanel contentPane = new JPanel();
 	public  JTextField textField_Search;
 	public  JTable table;
-	public  JTextField textField_ID;
 	public  JTextField textField_NameDish;
 	public  JTextField textField_UnitPrice;
 	private DishRepository dishRepository;
-	public QLMAPanel(ManagerView managerView, DishRepository dishRepository){
-		this.dishRepository = dishRepository;
+	private DishGroupRepository dishGroupRepository;
+	public QLMAPanel(ManagerView managerView, DishRepository dishRepository, DishGroupRepository dishGroupRepository) {
 		this.managerView = managerView;
+		this.dishRepository = dishRepository;
+		this.dishGroupRepository = dishGroupRepository;
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
 		contentPane.setVisible(false);
@@ -71,11 +76,11 @@ public class QLMAPanel extends JPanel {
 		table.setFillsViewportHeight(true);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
-				"ID", "Tên món ăn", "đơn giá"}));
+				"tên món", "đơn giá", "nhóm món"}));
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setDataSelectedToTF();
+				getDataSelected();
 			}
 		});
 		table.setRowHeight(25);
@@ -93,35 +98,38 @@ public class QLMAPanel extends JPanel {
 		separator_2.setBounds(182, 421, 784, 2);
 		contentPane.add(separator_2);
 
-		JLabel lbID = new JLabel("Id");
+		JLabel lbID = new JLabel("Tên món");
 		lbID.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lbID.setBounds(13, 440, 105, 25);
 		contentPane.add(lbID);
 
-		JLabel lbName = new JLabel("Tên món ăn");
+		JLabel lbName = new JLabel("Đơn giá");
 		lbName.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lbName.setBounds(13, 490, 105, 25);
 		contentPane.add(lbName);
 
-		JLabel lbDate = new JLabel("Đơn giá");
+		JLabel lbDate = new JLabel("Nhóm món");
 		lbDate.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lbDate.setBounds(13, 540, 105, 25);
 		contentPane.add(lbDate);
 
-		textField_ID = new JTextField();
-		textField_ID.setBounds(117, 440, 274, 25);
-		contentPane.add(textField_ID);
-		textField_ID.setColumns(10);
-
 		textField_NameDish = new JTextField();
 		textField_NameDish.setColumns(10);
-		textField_NameDish.setBounds(117, 490, 274, 25);
+		textField_NameDish.setBounds(117, 440, 274, 25);
 		contentPane.add(textField_NameDish);
 
 		textField_UnitPrice = new JTextField();
 		textField_UnitPrice.setColumns(10);
-		textField_UnitPrice.setBounds(117, 540, 274, 25);
+		textField_UnitPrice.setBounds(117, 490, 274, 25);
 		contentPane.add(textField_UnitPrice);
+
+		comboBox_DishGroup = new JComboBox();
+		ArrayList<DishGroupModel> listDishGroup = getListDishGroup();
+		for (DishGroupModel dishGroupModel : listDishGroup) {
+			comboBox_DishGroup.addItem(dishGroupModel.getNameDishGroup());
+		}
+		comboBox_DishGroup.setBounds(117, 540, 274, 25);
+		contentPane.add(comboBox_DishGroup);
 
 		JSeparator separator_3 = new JSeparator();
 		separator_3.setBounds(13, 602, 940, 2);
@@ -160,53 +168,39 @@ public class QLMAPanel extends JPanel {
 		this.managerView.setContentPane(contentPane);
 	}
 
-	public void updateDishSelected(){
-		DishModel dishModel = getDataSelected();
-		if (dishModel!=null) {
-			Optional<DishModel> dishModelFound = dishRepository.findById(dishModel.getId());
-
-			if (dishModelFound.isPresent()){
-				DishModel dishModelUpdate = dishModelFound.get();
-				dishModelUpdate.setId(textField_ID.getText());
-				dishModelUpdate.setNameDish(textField_NameDish.getText());
-				dishModelUpdate.setUnitPrice(Double.parseDouble(textField_UnitPrice.getText()));
-
-
-				updateRowTable(dishModelUpdate);
-
-				if (dishModel.getId().equals(dishModelUpdate.getId())){
-					dishRepository.save(dishModelUpdate);
-				}else {
-					dishRepository.delete(dishModel);
-					dishRepository.save(dishModelUpdate);
-				}
-
-				reset();
-			}
-		}
+	private ArrayList<DishGroupModel> getListDishGroup() {
+		return (ArrayList<DishGroupModel>) dishGroupRepository.findAll();
 	}
-	private void updateRowTable(DishModel dishModel){
-		DefaultTableModel dftm = (DefaultTableModel) table.getModel();
-		if (table.getSelectedRowCount() == 1){
+
+	public void updateDishSelected(){
+		DishModel dishModelUpdate = textFieldToObject();
+		if (dishModelUpdate!=null) {
+			DefaultTableModel dftm = (DefaultTableModel) table.getModel();
 			int i_row = table.getSelectedRow();
-			dftm.setValueAt(dishModel.getId(), i_row, 0);
-			dftm.setValueAt(dishModel.getNameDish(), i_row, 1);
-			dftm.setValueAt(dishModel.getUnitPrice(), i_row, 2);
+			String nameDishOld = dftm.getValueAt(i_row,0).toString();
+
+			if (dftm.getValueAt(i_row,0).toString().equals(dishModelUpdate.getNameDish())){
+				dishRepository.save(dishModelUpdate);
+			}else {
+				dishRepository.deleteById(nameDishOld);
+				dishRepository.save(dishModelUpdate);
+			}
+
+			dftm.setValueAt(dishModelUpdate.getNameDish(), i_row, 0);
+			dftm.setValueAt(dishModelUpdate.getUnitPrice(), i_row, 1);
+			dftm.setValueAt(dishModelUpdate.getDishGroup(), i_row, 2);
 
 			JOptionPane.showMessageDialog(managerView, "Update Successfully");
-		}else {
-			if (table.getRowCount() == 0){
-				JOptionPane.showMessageDialog(managerView, "Danh sách rỗng");
-			}
+			reset();
 		}
 	}
 	public void deleteDishSelected()  {
-		DishModel dishModel = getDataSelected();
+		DishModel dishModel = textFieldToObject();
 
 		if (dishModel != null) {
 			int luaChon = JOptionPane.showConfirmDialog(
 					managerView,
-					"Bạn muốn xóa món ăn " + dishModel.getId() + "(" + dishModel.getNameDish() + ")",
+					"Bạn muốn xóa món ăn " + dishModel.getNameDish(),
 					"Delete",
 					JOptionPane.YES_NO_OPTION
 			);
@@ -218,42 +212,46 @@ public class QLMAPanel extends JPanel {
 				dftm.removeRow(i_row);
 				reset();
 			}
-		} else {
-			JOptionPane.showMessageDialog(managerView, "Bạn chưa chọn món ăn", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	private void setDataSelectedToTF()  {
-		DishModel dishModel = getDataSelected();
-		if (dishModel!=null){
-			textField_ID.setText(dishModel.getId());
-			textField_NameDish.setText(dishModel.getNameDish());
-			textField_UnitPrice.setText(dishModel.getUnitPrice()+"");
+	public void insertData(){
+		DishModel dishModel = textFieldToObject();
+		if (dishModel!=null) {
+			Optional<DishModel> dishModelFound = dishRepository.findById(dishModel.getNameDish());
+
+			if (!dishModelFound.isPresent()) {
+				dishRepository.save(dishModel);
+				addDataTable(dishModel);
+				reset();
+			} else {
+				JOptionPane.showMessageDialog(managerView, "Món ăn đã có trong thực đơn", "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
-	private DishModel getDataSelected()  {
+	private DishModel textFieldToObject(){
+		String ten = textField_NameDish.getText();
+		String gia = textField_UnitPrice.getText();
+		int nhom = comboBox_DishGroup.getSelectedIndex();
+		System.out.println(ten);
+		System.out.println(gia);
+		if (!ten.equals("") && !gia.equals("")){
+			DishModel dishModel = new DishModel();
+			dishModel.setNameDish(ten);
+			dishModel.setUnitPrice(Double.parseDouble(gia));
+			dishModel.setDishGroup(nhom+1);
+			return dishModel;
+		}else {
+			JOptionPane.showMessageDialog(managerView, "Mời bạn nhập đầy đủ thông tin", "Error", JOptionPane.ERROR_MESSAGE);
+			return  null;
+		}
+	}
+	private void getDataSelected()  {
 		DefaultTableModel dftm = (DefaultTableModel) table.getModel();
 		int index_row = table.getSelectedRow();
 		if (index_row>=0) {
-			DishModel dishModel = new DishModel();
-			dishModel.setId(dftm.getValueAt(index_row, 0).toString());
-			dishModel.setNameDish(dftm.getValueAt(index_row, 1).toString());
-			dishModel.setUnitPrice(Double.parseDouble(dftm.getValueAt(index_row, 2).toString()));
-
-			return dishModel;
-		}else {
-			return null;
-		}
-	}
-
-	public void insertData(DishModel dishModel){
-		Optional<DishModel> dishModelFound = dishRepository.findById(dishModel.getId());
-
-		if (!dishModelFound.isPresent()) {
-			dishRepository.save(dishModel);
-			addDataTable(dishModel);
-			reset();
-		}else {
-			JOptionPane.showMessageDialog(managerView, "Trùng id", "Error", JOptionPane.ERROR_MESSAGE);
+			textField_NameDish.setText(dftm.getValueAt(index_row,0).toString());
+			textField_UnitPrice.setText(dftm.getValueAt(index_row,1).toString());
+			comboBox_DishGroup.setSelectedIndex(Integer.parseInt(dftm.getValueAt(index_row,2).toString())-1);
 		}
 	}
 	public void getDataTable(){
@@ -270,15 +268,15 @@ public class QLMAPanel extends JPanel {
 		DefaultTableModel dftm = (DefaultTableModel) table.getModel();
 
 		dftm.addRow(new Object[]{
-				dishModel.getId(),
 				dishModel.getNameDish(),
 				dishModel.getUnitPrice(),
+				dishModel.getDishGroup(),
 		});
 	}
 	public void reset(){
-		textField_ID.setText("");
 		textField_NameDish.setText("");
 		textField_UnitPrice.setText("");
+		comboBox_DishGroup.setSelectedIndex(0);
 	}
 	public void showPanel(){
 		contentPane.setVisible(true);
