@@ -6,6 +6,7 @@ import org.example.CnJava_Project.view.employee.frame.EmployeeView;
 import org.example.CnJava_Project.view.LoginView;
 import org.example.CnJava_Project.view.manager.frame.ManagerView;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Optional;
@@ -48,8 +49,5 @@ public class LoginController implements ActionListener {
 				loginView.labelError.setText("Login Faild");
 			}
 		}
-//		EmployeeView employeeView = loginView.context.getBean(EmployeeView.class);
-//		employeeView.setVisible(true);
-//		loginView.setVisible(false);
 	}
 }

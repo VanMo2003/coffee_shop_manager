@@ -1,10 +1,8 @@
 package org.example.CnJava_Project.controller.manager;
 
+import org.example.CnJava_Project.model.AccountModel;
 import org.example.CnJava_Project.view.LoginView;
-import org.example.CnJava_Project.view.manager.frame.AccountEmployeeView;
-import org.example.CnJava_Project.view.manager.frame.DishGroupView;
-import org.example.CnJava_Project.view.manager.frame.InfoShopView;
-import org.example.CnJava_Project.view.manager.frame.ManagerView;
+import org.example.CnJava_Project.view.manager.frame.*;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
@@ -60,6 +58,9 @@ public class ManagerController implements ActionListener {
 			loginView.textFieldUsername.setText("");
 			loginView.passwordField.setText("");
 			loginView.setVisible(true);
+		}else if (eventString.equals("Đổi mật khẩu")){
+			JFrame frame = new ChangePasswordView(managerView.accountRepositoryManager);
+			frame.setVisible(true);
 		}
 
 	}

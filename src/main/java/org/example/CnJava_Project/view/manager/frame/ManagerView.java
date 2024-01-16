@@ -72,12 +72,16 @@ public class ManagerView extends JFrame {
 		menuInformationShop.addActionListener(ac);
 		menuFunc.add(menuInformationShop);
 
-		JSeparator separator1 = new JSeparator();
-		menuFunc.add(separator1);
-
 		JMenuItem menuRevenue = new JMenuItem("Doanh Thu");
 		menuRevenue.addActionListener(ac);
 		menuFunc.add(menuRevenue);
+
+		JSeparator separator1 = new JSeparator();
+		menuFunc.add(separator1);
+
+		JMenuItem menuChangePassword = new JMenuItem("Đổi mật khẩu");
+		menuChangePassword.addActionListener(ac);
+		menuFunc.add(menuChangePassword);
 
 		JSeparator separator2 = new JSeparator();
 		menuFunc.add(separator2);

@@ -189,7 +189,7 @@ public class QLMAPanel extends JPanel {
 			dftm.setValueAt(dishModelUpdate.getUnitPrice(), i_row, 1);
 			dftm.setValueAt(dishModelUpdate.getDishGroup(), i_row, 2);
 
-			JOptionPane.showMessageDialog(managerView, "Update Successfully");
+			JOptionPane.showMessageDialog(managerView, "Chỉnh sửa thành công");
 			reset();
 		}
 	}
