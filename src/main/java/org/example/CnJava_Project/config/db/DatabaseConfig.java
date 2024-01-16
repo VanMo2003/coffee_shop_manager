@@ -1,13 +1,14 @@
 package org.example.CnJava_Project.config.db;
 
 
-import org.example.CnJava_Project.config.AES256;
+import org.example.CnJava_Project.AES256;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
+import java.util.logging.Logger;
 
 @Configuration
 public class DatabaseConfig {
@@ -29,6 +30,7 @@ public class DatabaseConfig {
 		dataSourceBuilder.url(AES256.decrypt(url, secretKey, salt));
 		dataSourceBuilder.username(AES256.decrypt(username, secretKey, salt));
 		dataSourceBuilder.password(AES256.decrypt(password, secretKey, salt));
+
 
 		return dataSourceBuilder.build();
 	}
