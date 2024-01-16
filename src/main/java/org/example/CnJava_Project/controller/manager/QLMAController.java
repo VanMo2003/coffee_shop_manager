@@ -21,9 +21,7 @@ public class QLMAController implements ActionListener {
 			qlmaPanel.deleteDishSelected();
 		} else if (eventString.equals("Chỉnh sửa")) {
 			qlmaPanel.updateDishSelected();
-		} else if (eventString.equals("Tài khoản")) {
-			System.out.println(eventString);
-		} else if (eventString.equals("Đặt lại")) {
+		}  else if (eventString.equals("Đặt lại")) {
 			qlmaPanel.reset();
 		}
 	}

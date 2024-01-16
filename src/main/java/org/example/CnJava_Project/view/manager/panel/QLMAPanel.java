@@ -178,7 +178,7 @@ public class QLMAPanel extends JPanel {
 			int i_row = table.getSelectedRow();
 			String nameDishOld = dftm.getValueAt(i_row,0).toString();
 
-			if (dftm.getValueAt(i_row,0).toString().equals(dishModelUpdate.getNameDish())){
+			if (nameDishOld.equals(dishModelUpdate.getNameDish())){
 				dishRepository.save(dishModelUpdate);
 			}else {
 				dishRepository.deleteById(nameDishOld);

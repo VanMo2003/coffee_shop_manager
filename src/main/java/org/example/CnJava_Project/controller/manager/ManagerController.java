@@ -5,8 +5,13 @@ import org.example.CnJava_Project.view.manager.frame.AccountEmployeeView;
 import org.example.CnJava_Project.view.manager.frame.DishGroupView;
 import org.example.CnJava_Project.view.manager.frame.InfoShopView;
 import org.example.CnJava_Project.view.manager.frame.ManagerView;
+import org.jfree.chart.ChartPanel;
 
+import javax.swing.*;
 import java.awt.event.*;
+
+import static org.example.CnJava_Project.view.manager.frame.RevenueView.createChart;
+
 
 public class ManagerController implements ActionListener {
 	private ManagerView managerView;
@@ -34,7 +39,15 @@ public class ManagerController implements ActionListener {
 		} else if (eventString.equals("Thực đơn")){
 			managerView.showQLMA();
 		} else if (eventString.equals("Doanh Thu")){
-			System.out.println(eventString);
+			ChartPanel chartPanel = new ChartPanel(createChart(managerView.billRepositoryManager));
+			chartPanel.setPreferredSize(new java.awt.Dimension(940, 400));
+			JFrame frame = new JFrame();
+			frame.add(chartPanel);
+			frame.setTitle("Doanh thu");
+			frame.setSize(600, 400);
+			frame.setLocationRelativeTo(null);
+			frame.setResizable(false);
+			frame.setVisible(true);
 		} else if (eventString.equals("Thông tin quán")){
 			InfoShopView infoShopView = new InfoShopView(
 					managerView.infoShopRepositoryManager,

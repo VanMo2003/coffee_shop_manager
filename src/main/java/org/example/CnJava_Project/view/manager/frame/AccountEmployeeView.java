@@ -111,6 +111,8 @@ public class AccountEmployeeView extends JFrame {
 				}
 			}else {
 				labelShowFullName.setText("Họ và tên");
+				textFieldUsername.setText("");
+				passwordField.setText("");
 			}
 		}
 	}
@@ -120,7 +122,9 @@ public class AccountEmployeeView extends JFrame {
 
 		if (!listEmployee.isEmpty()){
 			ArrayList<String> listCCCD = new ArrayList<>();
-			listEmployee.forEach(employeeModel -> listCCCD.add(employeeModel.getCccd()));
+			listEmployee.forEach(
+					employeeModel -> listCCCD.add(employeeModel.getCccd())
+			);
 
 			return listCCCD;
 		}

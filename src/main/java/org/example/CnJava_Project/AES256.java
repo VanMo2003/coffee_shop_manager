@@ -17,7 +17,6 @@ public class AES256 {
 	public static String encrypt(String strToEncrypt, String secretKey, String salt) {
 
 		try {
-
 			SecureRandom secureRandom = new SecureRandom();
 			byte[] iv = new byte[16];
 			secureRandom.nextBytes(iv);
